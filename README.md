@@ -164,8 +164,141 @@ npm start</code>
 
 The app should run on 192.168.10.100
 
-## Task 3: 
+## Task 3: Connecting the database to the app
 
 - Add environment variable
 
-<code>echo 'export DB_HOST=192.168.10.150:27017/posts/' >> /etc/environment
+<code>echo DB_HOST=192.168.10.150:27017/posts >> ~/.bashrc
+
+source ~/.bashrc</code>
+
+- Exit the vm
+
+- Vagrant into the database
+
+<code> vagrant ssh db</code>
+
+## Task 4: Automation
+
+Create a VagrantFile with the following inside:
+
+    Vagrant.configure("2") do |config|
+
+        config.vm.define "db" do |db|
+            db.vm.box = "ubuntu/xenial64"
+            db.vm.network "private_network", ip: "192.168.10.150"
+            db.vm.synced_folder "config_files", "/home/ubuntu/config_files"
+            db.vm.provision "shell", path: "db/provision_db.sh"
+        end
+        config.vm.define "app" do |app|
+            app.vm.box = "ubuntu/xenial64"
+            app.vm.network "private_network", ip: "192.168.10.100"
+            app.vm.synced_folder "app", "/home/ubuntu/app"
+            app.vm.synced_folder "config_files", "/home/ubuntu/config_files"
+            app.vm.provision "shell", path: "provision.sh"
+        end
+        
+    end
+
+Create a provision.sh with the following inside:
+
+    !#/bin/bash
+
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
+    sudo apt-get install nginx -y
+    sudo apt-get install python-software-properties -y
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    sudo apt-get install nodejs -y
+    cd /home/ubuntu/app
+    sudo npm install pm2 -y
+    sudo npm install
+    sudo rm /etc/nginx/sites-available/default
+    sudo ln -s /home/ubuntu/config_files/default /etc/nginx/sites-available/default
+    sudo nginx -t
+    sudo systemctl restart nginx
+    echo 'export DB_HOST=192.168.10.150:27017/posts/' >> /etc/environment
+    source /etc/environment
+    node seeds/seed.js
+    npm start
+
+Create a provision_db.sh with the following inside:
+
+    !#/bin/bash
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
+    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+    sudo apt-get update -y
+    sudo apt-get install -y mongodb-org
+    sudo systemctl start mongod
+    sudo systemctl enable mongod
+    sudo rm /etc/mongod.conf
+    sudo ln -s /home/ubuntu/config_files/mongod.conf /etc/mongod.conf
+    sudo systemctl restart mongod
+
+- Create a directory config_files
+- Within config_files, create a default file with the following inside:
+
+    server {
+        listen 80;
+
+        server_name _;
+
+        location / {
+            proxy_pass http://localhost:3000;      
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade'; 
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;      
+        }
+    }
+
+- Within config_files, create a mongod.conf file with the following inside:
+
+        # mongod.conf
+
+        # for documentation of all options, see:
+        #   http://docs.mongodb.org/manual/reference/configuration-options/
+
+        # Where and how to store data.
+        storage:
+        dbPath: /var/lib/mongodb
+        journal:
+            enabled: true
+        #  engine:
+        #  mmapv1:
+        #  wiredTiger:
+
+        # where to write logging data.
+        systemLog:
+        destination: file
+        logAppend: true
+        path: /var/log/mongodb/mongod.log
+
+        # network interfaces
+        net:
+        port: 27017
+        bindIp: 0.0.0.0
+
+
+        # how the process runs
+        processManagement:
+        timeZoneInfo: /usr/share/zoneinfo
+
+        #security:
+
+        #operationProfiling:
+
+        #replication:
+
+        #sharding:
+
+        ## Enterprise-Only Options:
+
+        #auditLog:
+
+        #snmp:
+
+- When you vagrant up and, you should be able to see a page of latin words on 192.168.10.100/posts
