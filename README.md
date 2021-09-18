@@ -79,104 +79,102 @@ share your repo by 12:30 once completed
 ## Task 1: Configure reverse proxy first without the db machine
 The app should load without 3000 port instead of nginx default page
 
-- Create a provision.sh on localhost:
+- Create a provision.sh file on localhost:
+- Go into the provision file
 
-<code>nano provision.sh</code>
-
-    !#/bin/bash
-
-    sudo apt-get update -y
-
-    sudo apt-get upgrade -y
-
-    sudo apt-get install nginx -y
-
+`nano provision.sh`
+```
+!#/bin/bash
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install nginx -y
+```
 - Go into the Vagrantfile:
 
-<code>nano Vagrantfile</code>
+`nano Vagrantfile`
+```
+Vagrant.configure("2") do |config|
 
-    Vagrant.configure("2") do |config|
-
-        config.vm.box = "ubuntu/xenial64"
+    config.vm.box = "ubuntu/xenial64"
         
-        config.vm.network "private_network", ip: "192.168.10.100"
+    config.vm.network "private_network", ip: "192.168.10.100"
         
-        config.vm.provision "shell", path: "provision.sh"
+    config.vm.provision "shell", path: "provision.sh"
 
     end
+```
 
-- Install dependencies:
+- Go into virtual machine:
 
-Go into virtual machine:
+`vagrant up`
 
-<code>vagrant up
+`vagrant ssh`
 
-vagrant ssh</code>
+- Change directory into home/ubuntu:
 
-Change directory into home/ubuntu:
+`cd /home/ubuntu`
 
-<code> cd /home/ubuntu </code>
 
 Install dependencies:
+```
+sudo apt-get install npm -y
 
-<code>sudo apt-get install npm -y</code>
+sudo apt-get install python-software-properties -y
 
-<code>sudo apt-get install python-software-properties -y</code>
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
-<code>curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -</code>
-
-<code>sudo apt-get install nodejs -y</code>
-
+sudo apt-get install nodejs -y
+```
 Go into the app directory:
-
-<code>cd app
-
+`cd app`
+```
 sudo npm install pm2 -g
 
 npm install
 
-npm start</code>
-
+npm start
+```
 The app should run on 192.168.10.100:3000
 
 ## Task 2: Configure Reverse Proxy
 
 - Go into the default file
 
-<code>sudo nano /etc/nginx/sites-available/default</code>
+`sudo nano /etc/nginx/sites-available/default`
 
- Add the following to the server{}:
-
-    location / {
-            proxy_pass http://localhost:3000;      
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade'; 
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;      
-        }
-
-<code>sudo nginx -t
+Add the following to the server{}:
+```
+location / {
+        proxy_pass http://localhost:3000;      
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade'; 
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;      
+    }
+```
+```
+sudo nginx -t
 
 sudo systemctl restart nginx
 
-npm start</code>
-
+npm start
+```
 The app should run on 192.168.10.100
 
 ## Task 3: Connecting the database to the app
 
 - Add environment variable
-
-<code>echo DB_HOST=192.168.10.150:27017/posts >> ~/.bashrc
+```
+echo DB_HOST=192.168.10.150:27017/posts >> ~/.bashrc
 
 source ~/.bashrc</code>
-
+```
 - Exit the vm
 
-- Vagrant into the database
+- Vagrant ssh into the database
 
-<code> vagrant ssh db</code>
+`vagrant ssh db`
 
 ## Task 4: Automation
 
@@ -201,104 +199,88 @@ Create a VagrantFile with the following inside:
     end
 
 Create a provision.sh with the following inside:
-
-    !#/bin/bash
-
-    sudo apt-get update -y
-    sudo apt-get upgrade -y
-    sudo apt-get install nginx -y
-    sudo apt-get install python-software-properties -y
-    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get install nodejs -y
-    cd /home/ubuntu/app
-    sudo npm install pm2 -y
-    sudo npm install
-    sudo rm /etc/nginx/sites-available/default
-    sudo ln -s /home/ubuntu/config_files/default /etc/nginx/sites-available/default
-    sudo nginx -t
-    sudo systemctl restart nginx
-    echo 'export DB_HOST=192.168.10.150:27017/posts/' >> /etc/environment
-    source /etc/environment
-    node seeds/seed.js
-    npm start
-
+```
+!#/bin/bash
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install nginx -y
+sudo apt-get install python-software-properties -y
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install nodejs -y
+cd /home/ubuntu/app
+sudo npm install pm2 -y
+sudo npm install
+sudo rm /etc/nginx/sites-available/default
+sudo ln -s /home/ubuntu/config_files/default /etc/nginx/sites-available/default
+sudo nginx -t
+sudo systemctl restart nginx
+echo 'export DB_HOST=192.168.10.150:27017/posts/' >> /etc/environment
+source /etc/environment
+node seeds/seed.js
+npm start
+```
 Create a provision_db.sh with the following inside:
-
-    !#/bin/bash
-    sudo apt-get update -y
-    sudo apt-get upgrade -y
-    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-    sudo apt-get update -y
-    sudo apt-get install -y mongodb-org
-    sudo systemctl start mongod
-    sudo systemctl enable mongod
-    sudo rm /etc/mongod.conf
-    sudo ln -s /home/ubuntu/config_files/mongod.conf /etc/mongod.conf
-    sudo systemctl restart mongod
-
-- Create a directory config_files
-- Within config_files, create a default file with the following inside:
-
-    server {
-        listen 80;
-
-        server_name _;
-
-        location / {
-            proxy_pass http://localhost:3000;      
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade'; 
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;      
-        }
+```
+!#/bin/bash
+sudo apt-get update -y
+sudo apt-get upgrade -y
+wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+sudo apt-get update -y
+sudo apt-get install -y mongodb-org
+sudo systemctl start mongod
+sudo systemctl enable mongod
+sudo rm /etc/mongod.conf
+sudo ln -s /home/ubuntu/config_files/mongod.conf /etc/mongod.conf
+sudo systemctl restart mongod
+```
+- Create a directory 'config_files'
+- Within 'config_files', create a 'default' file with the following inside:
+```
+server {
+    listen 80;
+    server_name _;
+    location / {
+        proxy_pass http://lhost:3000;      
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade p_upgrade;
+        proxy_set_header Connection rade'; 
+        proxy_set_header Host $host;
+        proxy_cache_bypass p_upgrade;      
     }
-
-- Within config_files, create a mongod.conf file with the following inside:
-
-        # mongod.conf
-
-        # for documentation of all options, see:
-        #   http://docs.mongodb.org/manual/reference/configuration-options/
-
-        # Where and how to store data.
-        storage:
-        dbPath: /var/lib/mongodb
-        journal:
-            enabled: true
-        #  engine:
-        #  mmapv1:
-        #  wiredTiger:
-
-        # where to write logging data.
-        systemLog:
-        destination: file
-        logAppend: true
-        path: /var/log/mongodb/mongod.log
-
-        # network interfaces
-        net:
-        port: 27017
-        bindIp: 0.0.0.0
-
-
-        # how the process runs
-        processManagement:
-        timeZoneInfo: /usr/share/zoneinfo
-
-        #security:
-
-        #operationProfiling:
-
-        #replication:
-
-        #sharding:
-
-        ## Enterprise-Only Options:
-
-        #auditLog:
-
-        #snmp:
-
-- When you vagrant up and, you should be able to see a page of latin words on 192.168.10.100/posts
+}
+```
+- Within 'config_files', create a 'mongod.conf' file with the following inside:
+```
+# mongod.conf
+# for documentation of all options, e:
+#   http://docs.mongodb.org/manual/erence/configuration-options/
+# Where and how to store data.
+storage:
+dbPath: /var/lib/mongodb
+journal:
+    enabled: true
+#  engine:
+#  mmapv1:
+#  wiredTiger:
+# where to write logging data.
+systemLog:
+destination: file
+logAppend: true
+path: /var/log/mongodb/mongod.log
+# network interfaces
+net:
+port: 27017
+bindIp: 0.0.0.0
+# how the process runs
+processManagement:
+timeZoneInfo: /usr/share/zoneinfo
+#security:
+#operationProfiling:
+#replication:
+#sharding:
+## Enterprise-Only Options:
+#auditLog:
+#snmp:
+```
+- When you vagrant up, you should be able to see a page of latin words on 192.168.10.100/posts
