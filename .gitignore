@@ -9,3 +9,4 @@ ubuntu-xenial-16.04-cloudimg-console.log
 .vagrant/machines/default/virtualbox/private_key
 environment/
 app.zip
+package-lock.json
