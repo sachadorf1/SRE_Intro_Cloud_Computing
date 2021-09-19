@@ -13,7 +13,7 @@
     - [Cloud](#cloud)
     - [Hybrid Cloud](#hybrid-cloud)
     - [Multi Cloud](#multi-cloud)
-    - [add a diagram for each case with real life example or use cases](#add-a-diagram-for-each-case-with-real-life-example-or-use-cases)
+    - [Diagrams for each case with real life example or use cases (needs editing)](#diagrams-for-each-case-with-real-life-example-or-use-cases-needs-editing)
 - [Vagrant](#vagrant)
   - [Task 1: Configure reverse proxy first without the db machine](#task-1-configure-reverse-proxy-first-without-the-db-machine)
   - [Task 2: Configure Reverse Proxy](#task-2-configure-reverse-proxy)
@@ -109,10 +109,7 @@ It is highly scalable and reliable, easy to use, flexible and cost effective as 
     - Companies can avoid vendor lock-in as they don't have everything on one provider, also encourages competitive prices
     - Risk reduction - If one cloud goes down, you can rely on your other providers to keep your information secure
 
-### add a diagram for each case with real life example or use cases
-
-
-
+### Diagrams for each case with real life example or use cases (needs editing)
 
 ![image](https://user-images.githubusercontent.com/88316764/130951629-5cc3a8fb-2c7e-434b-bc2a-59c2f8c3ba65.png)
 
@@ -126,9 +123,11 @@ It is highly scalable and reliable, easy to use, flexible and cost effective as 
 
 
 
-![Screenshot (65)](https://user-images.githubusercontent.com/88316764/130981031-7b3d6d2f-5255-4590-a343-e6f3aad63fc9.png)
 
 # Vagrant
+
+
+![Screenshot (65)](https://user-images.githubusercontent.com/88316764/130981031-7b3d6d2f-5255-4590-a343-e6f3aad63fc9.png)
 
 ## Task 1: Configure reverse proxy first without the db machine
 The app should load without 3000 port instead of nginx default page
