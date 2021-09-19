@@ -1,6 +1,6 @@
 ubuntu-bionic-18.04-cloudimg-console.log
 ubuntu-xenial-16.04-cloudimg-console.log
-.vagrant
+.vagrant/
 
 .vagrant/machines/default/virtualbox/action_provision
 .vagrant/machines/default/virtualbox/action_set_name 
