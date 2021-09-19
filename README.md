@@ -1,63 +1,118 @@
 # SRE_introduction_cloud_computing_AWS 
-## Cloud Computing with AWS
-### SDLC stages
-#### Risk factors with SDLC stages
-##### Monitoring
 
-### Key Advantages:
+- [SRE_introduction_cloud_computing_AWS](#sre_introduction_cloud_computing_aws)
+- [Introduction to Cloud Computing](#introduction-to-cloud-computing)
+    - [Key Advantages](#key-advantages)
+    - [What is the role of an SRE?](#what-is-the-role-of-an-sre)
+  - [What is Cloud Computing and the benefits of using it?](#what-is-cloud-computing-and-the-benefits-of-using-it)
+  - [What is AWS and benefits of using it?](#what-is-aws-and-benefits-of-using-it)
+  - [What is SDLC and what are the stages of it?](#what-is-sdlc-and-what-are-the-stages-of-it)
+  - [What are the risk levels at each stage of SDLC?](#what-are-the-risk-levels-at-each-stage-of-sdlc)
+  - [What is On Prem, Cloud, Hybrid Cloud and Multi Cloud - Pros and cons of each model](#what-is-on-prem-cloud-hybrid-cloud-and-multi-cloud---pros-and-cons-of-each-model)
+    - [On premises](#on-premises)
+    - [Cloud](#cloud)
+    - [Hybrid Cloud](#hybrid-cloud)
+    - [Multi Cloud](#multi-cloud)
+    - [add a diagram for each case with real life example or use cases](#add-a-diagram-for-each-case-with-real-life-example-or-use-cases)
+- [Vagrant](#vagrant)
+  - [Task 1: Configure reverse proxy first without the db machine](#task-1-configure-reverse-proxy-first-without-the-db-machine)
+  - [Task 2: Configure Reverse Proxy](#task-2-configure-reverse-proxy)
+  - [Task 3: Connecting the database to the app](#task-3-connecting-the-database-to-the-app)
+  - [Task 4: Automation](#task-4-automation)
+# Introduction to Cloud Computing
+
+### Key Advantages
 - Ease of use
 - Flexibility
 - Robustness
 - Cost
 
-**SRE introduction**
-- What is the role of SRE?
+### What is the role of an SRE?
 
 They help increase the reliability and performance of the site. They are more on the operations side, whilst also understanding the development side.
 They automate tasks and monitor and improve the efficiency of systems.
 
-
-**Cloud Computing**
-- What is Cloud Computing and the benefits of using it?
+## What is Cloud Computing and the benefits of using it?
 
 Instead of buying and spending money maintaining your own physical data centres, you can get access to these services on an as-need basis. This saves a lot of money and is more flexible/adaptable to change.
 
-**What is Amazon Web Services (AWS)**
-- What is AWS and benefits of using it
+## What is AWS and benefits of using it?
 
 It provides online cloud computing platforms on a pay-as-you-go basis, including infrastructure (storage and databases) and services such as Machine Learning and Analytics.
 It is highly scalable and reliable, easy to use, flexible and cost effective as you only pay for what you use.
 
-**What is SDLS and stages of SDLC**
-- What is SDLC and what are the stages of it
 
-Software Development Life Cycle
+## What is SDLC and what are the stages of it?
+
+- Software Development Life Cycle
+- A methodology that defines different stages that bring a software development project from its initial idea to its deployment and maintenance
+- It exists to improve the quality of software and the development process
+
+1. Planning
+2. Analysis
+3. Design
+4. Development/Implementation
+5. Testing and Integration
+6. Maintenance
 
 ![SDLC_diagram](https://user-images.githubusercontent.com/88316764/130941816-8661e9d5-19de-4b4e-a0d4-c24e124c9409.png)
 
-**What are the Risk level at each stage of SDLC?**
-- Low
-- Medium
-- High
+## What are the risk levels at each stage of SDLC?
 
-complete it by 11 and share you github repo once completed
-11-11:15
+1. Planning - Low
+2. Analysis - Low
+3. Design - Medium
+4. Implementation - High
+5. Testing and Integration - High
+6. Maintenance - High
 
--What is on prem, cloud and Hybrid cloud and multi cloud
+## What is On Prem, Cloud, Hybrid Cloud and Multi Cloud - Pros and cons of each model
 
-On premises is where you buy and maintain the data centers
-Cloud is globally available and you can access services on an as-need basis, more scalable and cost-effective.
-
-Hybrid Cloud is where some of your data (e.g. sensitive information) is stored privately and some is stored publicly using Cloud services
-Hybrid cloud is a combination of public and private clouds
-
-Multi cloud involves the use of more than one public cloud
-
--add a diagram for each case with real life example or use cases
+### On premises
+- On premises is where you buy and maintain your own data centers
+- Pros:
+    - You have full control over your applications/servers
+- Cons:
+    - Expensive to maintain
+    - Difficult and expensive to scale
+### Cloud
+- Cloud is globally available and you can access services on an as-need basis, more scalable and cost-effective
+- Instead of you paying to maintain your own data centers, a third-party (cloud provider) does that for you
+- Pros
+    - Cost effective, you only pay for what you use
+    - Minimum management and easy to use
+    - Scalable with your business needs
+    - Reliable and you have a huge scale of resources and storage available
+- Cons
+    - Downtime, cloud requires high internet speed and good bandwidth
+    - Limited flexibility as you are not in control of the infrastructure
 
 ![image](https://user-images.githubusercontent.com/88316764/130954738-3eb3466a-a7a5-47ef-b47b-5112ecec04c8.png)
 
 ![image](https://user-images.githubusercontent.com/88316764/130954613-60354958-aed4-46ea-8eb9-28f79c0a83f9.png)
+
+### Hybrid Cloud
+- Mixed computing, storage and services environment made up of on-prem infrastructure, private cloud and public cloud
+- Some of your data (e.g. sensitive information) is stored privately and some is stored publicly using Cloud services
+- Banks use this so they can have control of sensitive data on prem (e.g. personal details) but also save money by moving low risk data (e.g. information on their website) to the cloud
+- Pros
+    - Flexibility as you can decide what data you want to have on prem and what data you want to have on the cloud, so you can choose a solution that 
+    - Faster software performance, enables organisations to move faster to DevOps
+- Cons
+    - Difficult to implement and maintain
+    - Can be more expensive than public cloud
+    - Compatibility and data integration - Need to understand what files are compatible or how to deal with that
+
+### Multi Cloud
+- Multi cloud involves the use of more than one public cloud (e.g. AWS and Azure)
+- Pros 
+    - Companies can avoid vendor lock-in as they don't have everything on one provider, also encourages competitive prices
+    - Risk reduction - If one cloud goes down, you can rely on your other providers to keep your information secure
+
+### add a diagram for each case with real life example or use cases
+
+
+
 
 ![image](https://user-images.githubusercontent.com/88316764/130951629-5cc3a8fb-2c7e-434b-bc2a-59c2f8c3ba65.png)
 
@@ -65,16 +120,15 @@ Multi cloud involves the use of more than one public cloud
 
 
 
--pros and cons of each model
 
 ![image](https://user-images.githubusercontent.com/88316764/130951879-1c6a854b-c759-4a76-8eeb-edd9edeaf7ba.png)
-
-share your repo by 12:30 once completed
 
 
 
 
 ![Screenshot (65)](https://user-images.githubusercontent.com/88316764/130981031-7b3d6d2f-5255-4590-a343-e6f3aad63fc9.png)
+
+# Vagrant
 
 ## Task 1: Configure reverse proxy first without the db machine
 The app should load without 3000 port instead of nginx default page
@@ -126,6 +180,7 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install nodejs -y
 ```
 Go into the app directory:
+
 `cd app`
 ```
 sudo npm install pm2 -g
@@ -153,6 +208,7 @@ location / {
         proxy_cache_bypass $http_upgrade;      
     }
 ```
+- Then enter the following in the terminal:
 ```
 sudo nginx -t
 
